@@ -35,6 +35,7 @@ static char *table_alignment;
 static char cell_type = 'd';
 static int language = ENGLISH;
 static bool html_footer = FALSE;
+static bool force_latex_snippet = FALSE;
 static int odf_type = 0;
 static bool in_list = FALSE;
 static bool no_latex_footnote = FALSE;
@@ -1284,6 +1285,8 @@ static void print_latex_element(GString *out, element *elt) {
             g_string_append_printf(out, "\\input{%s}\n", elt->children->contents.str);
         } else if (strcmp(elt->contents.str, "latexfooter") == 0) {
             latex_footer = elt->children->contents.str;
+        } else if (strcmp(elt->contents.str, "latexformat") == 0) {
+            force_latex_snippet = strcmp(elt->children->contents.str, "snippet") == 0;
         } else if (strcmp(elt->contents.str, "bibtex") == 0) {
             g_string_append_printf(out, "\\def\\bibliocommand{\\bibliography{%s}}\n",elt->children->contents.str);
         } else if (strcmp(elt->contents.str, "xhtmlheader") == 0) {
@@ -2309,7 +2312,7 @@ void print_latex_footer(GString *out) {
         pad(out,2);
         g_string_append_printf(out, "\\input{%s}\n", latex_footer);
     }
-    if (html_footer) {
+    if (html_footer && !force_latex_snippet) {
         g_string_append_printf(out, "\n\\end{document}");
     }
 }
