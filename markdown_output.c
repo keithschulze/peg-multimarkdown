@@ -905,7 +905,12 @@ static void print_latex_element(GString *out, element *elt) {
     case LINK:
         if (strncmp(elt->contents.link->identifier, "fig:", 4) == 0 ||
             strncmp(elt->contents.link->identifier, "tab:", 4) == 0) {
+            if (elt->contents.link->label->contents.str != NULL && 
+                strcmp(elt->contents.link->label->contents.str, elt->contents.link->identifier) != 0 ) {
+                g_string_append_printf(out, "%s~\\ref{%s}", elt->contents.link->label->contents.str, elt->contents.link->identifier);
+            } else {
                 g_string_append_printf(out, "~\\ref{%s}", elt->contents.link->identifier);
+            }
         } else if (elt->contents.link->url[0] == '#') {
             /* This is a link to anchor within document */
             label = label_from_string(elt->contents.link->url,0);
