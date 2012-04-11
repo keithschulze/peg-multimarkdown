@@ -1016,7 +1016,6 @@ CitationReferenceDouble = !"[]" b:Label < Spnl > !"[]" ref:RawCitationReference
                         char *s;
                         s = malloc(strlen(ref->contents.str) + 4);
                         sprintf(s, "[%s]", ref->contents.str);
-                        printf("%s", ref->contents.str);
                         $$ = mk_str(s);
                         $$->key = CITATION;
                         b->key = LOCATOR;
