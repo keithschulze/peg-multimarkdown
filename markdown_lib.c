@@ -218,13 +218,17 @@ gboolean has_metadata(char *text, int extensions) {
     formatted_text = preformat_text(text);
     
     result = parse_metadata_only(formatted_text->str, extensions);
+
+    hasMeta = FALSE;
     
-    if (result->children != NULL) {
-        hasMeta = TRUE;
-    } else {
-        hasMeta = FALSE;
+    if (result != NULL) {
+        if (result->children != NULL) {
+            hasMeta = TRUE;
+            free_element_list(result);
+        } else {
+            free_element(result);
+        }
     }
-    free_element_list(result);
     return hasMeta;
 }
 
