@@ -5,6 +5,7 @@
   (c) 2008 John MacFarlane (jgm at berkeley dot edu).
   
   portions Copyright (c) 2010-2011 Fletcher T. Penney
+  portions Copyright (C) 2012 Keith E. Schulze
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License or the MIT
@@ -470,7 +471,7 @@ static void print_html_element(GString *out, element *elt, bool obfuscate) {
         /* Get locator, if present */
         locator = locator_for_citation(elt);
 
-        if (strncmp(elt->contents.str,"[#",2) == 0) {
+        if (strncmp(elt->contents.str,"[",1) == 0) {
             /* reference specified externally */
             if ( elt->key == NOCITATION ) {
                 /* work not cited, but used in bibliography for LaTeX */
@@ -763,7 +764,7 @@ static void print_latex_string(GString *out, char *str) {
     char *tmp;
     while (*str != '\0') {
         switch (*str) {
-          case '{': case '}': case '$': case '%':
+          case '$': case '%':
           case '&': case '_': case '#':
             g_string_append_printf(out, "\\%c", *str);
             break;
@@ -902,7 +903,10 @@ static void print_latex_element(GString *out, element *elt) {
         }
         break;
     case LINK:
-        if (elt->contents.link->url[0] == '#') {
+        if (strncmp(elt->contents.link->identifier, "fig:", 4) == 0 ||
+            strncmp(elt->contents.link->identifier, "tab:", 4) == 0) {
+                g_string_append_printf(out, "~\\ref{%s}", elt->contents.link->identifier);
+        } else if (elt->contents.link->url[0] == '#') {
             /* This is a link to anchor within document */
             label = label_from_string(elt->contents.link->url,0);
             if (elt->contents.link->label != NULL) {
@@ -1169,27 +1173,27 @@ static void print_latex_element(GString *out, element *elt) {
         break;
     case NOCITATION:
     case CITATION:
-        if (strncmp(elt->contents.str,"[#",2) == 0) {
+        if (strncmp(elt->contents.str,"[",1) == 0) {
             /* This should be used as a bibtex citation key after trimming */
             elt->contents.str[strlen(elt->contents.str)-1] = '\0';
             if (elt->key == NOCITATION ) {
-                g_string_append_printf(out, "~\\nocite{%s}", &elt->contents.str[2]);
+                g_string_append_printf(out, "~\\nocite{%s}", &elt->contents.str[1]);
             } else {
                 if ((elt->children != NULL) && (elt->children->key == LOCATOR)) {
-                    if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1],";") == 0) {
+                    if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
                         g_string_append_printf(out, " \\citet[");
                         elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
                     } else {
                         g_string_append_printf(out, "~\\citep[");
                     }
                     print_latex_element(out,elt->children);
-                    g_string_append_printf(out, "]{%s}",&elt->contents.str[2]);
+                    g_string_append_printf(out, "]{%s}",&elt->contents.str[1]);
                 } else {
-                    if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1],";") == 0) {
+                    if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
                         elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
-                        g_string_append_printf(out, " \\citet{%s}", &elt->contents.str[2]);
+                        g_string_append_printf(out, " \\citet{%s}", &elt->contents.str[1]);
                     } else {
-                        g_string_append_printf(out, "~\\citep{%s}", &elt->contents.str[2]);
+                        g_string_append_printf(out, "~\\citep{%s}", &elt->contents.str[1]);
                     }
                 }
             }
@@ -1203,7 +1207,7 @@ static void print_latex_element(GString *out, element *elt) {
                 free_element(temp);
             } else {
                 if ((elt->children != NULL) && (elt->children->key == LOCATOR)){
-                    if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1],";") == 0) {
+                    if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
                         g_string_append_printf(out, " \\citet[");
                         elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
                     } else {
@@ -1216,7 +1220,7 @@ static void print_latex_element(GString *out, element *elt) {
                     elt->children = temp->next;
                     free_element(temp);
                 } else {
-                    if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1],";") == 0) {
+                    if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
                         elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
                         g_string_append_printf(out, " \\citet{%s}", elt->contents.str);
                     } else {
