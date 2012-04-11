@@ -1015,7 +1015,8 @@ CitationReferenceDouble = !"[]" b:Label < Spnl > !"[]" ref:RawCitationReference
                         /* TODO: fix this - need to print label as well */
                         char *s;
                         s = malloc(strlen(ref->contents.str) + 4);
-                        sprintf(s, "[#%s]", ref->contents.str);
+                        sprintf(s, "[%s]", ref->contents.str);
+                        printf("%s", ref->contents.str);
                         $$ = mk_str(s);
                         $$->key = CITATION;
                         b->key = LOCATOR;
@@ -1044,15 +1045,14 @@ CitationReferenceSingle =  (( "[]" Spnl ref:RawCitationReference )
                     } else {
                         char *s;
                         s = malloc(strlen(ref->contents.str) + 4);
-                        sprintf(s, "[#%s]", ref->contents.str);
+                        sprintf(s, "[%s]", ref->contents.str);
                         $$ = mk_str(s);
                         $$->key = CITATION;
                         free(s);
                     }
                 }
 
-
-RawCitationReference = "[#" < ( !Newline !']' . )+ > ']'
+RawCitationReference = "{" < ( !Newline !'}' . )+ > '}'
                    { $$ = mk_str(yytext); }
 
 
