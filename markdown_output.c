@@ -1292,6 +1292,8 @@ static void print_latex_element(GString *out, element *elt) {
             base_header_level = atoi(elt->children->contents.str);
         } else if (strcmp(elt->contents.str, "latexinput") == 0) {
             g_string_append_printf(out, "\\input{%s}\n", elt->children->contents.str);
+        } else if (strcmp(elt->contents.str, "latexinclude") == 0) {
+            g_string_append_printf(out, "\\include{%s}\n", elt->children->contents.str);
         } else if (strcmp(elt->contents.str, "latexfooter") == 0) {
             latex_footer = elt->children->contents.str;
         } else if (strcmp(elt->contents.str, "latexformat") == 0) {
