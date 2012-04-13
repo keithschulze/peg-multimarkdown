@@ -2035,9 +2035,23 @@ void print_odf_element(GString *out, element *elt) {
         /* Get locator, if present */
         locator = locator_for_citation(elt);
 
-        if (strncmp(elt->contents.str,"[#",2) == 0) {
+        if (strncmp(elt->contents.str,"[",1) == 0) {
             /* reference specified externally, so just display it */
-            g_string_append_printf(out, "%s", elt->contents.str);
+            elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
+            if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
+                elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
+                int i;
+                i = strcspn(elt->contents.str, ":");
+                if (i == strlen(elt->contents.str)) {
+                    g_string_append_printf(out, "{*%s}", &elt->contents.str[1]);
+                } else {
+                    char * s = (char*) malloc(i);
+                    strncpy(s, &elt->contents.str[1], i-1);
+                    g_string_append_printf(out, " %s et. al. {*%s}",s , &elt->contents.str[1]);
+                }
+            } else {
+                g_string_append_printf(out, " {%s}", &elt->contents.str[1]);
+            }
         } else {
             /* reference specified within the MMD document,
                so will output as footnote */
