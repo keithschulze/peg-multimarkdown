@@ -904,8 +904,8 @@ static void print_latex_element(GString *out, element *elt) {
         break;
     case LINK:
         if (strncmp(elt->contents.link->identifier, "fig:", 4) == 0 ||
-            strncmp(elt->contents.link->identifier, "tab:", 4) == 0) {
-            if (elt->contents.link->label->contents.str != NULL && 
+            strncmp(elt->contents.link->identifier, "tab:", 4) == 0 ) {
+            if (elt->contents.link->label != NULL && 
                 strcmp(elt->contents.link->label->contents.str, elt->contents.link->identifier) != 0 ) {
                 g_string_append_printf(out, "%s~\\ref{%s}", elt->contents.link->label->contents.str, elt->contents.link->identifier);
             } else {
