@@ -59,7 +59,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-t odf test.md"
+            argument = "-t latex test.md"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
