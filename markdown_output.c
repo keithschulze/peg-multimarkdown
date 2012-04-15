@@ -996,9 +996,15 @@ static void print_latex_element(GString *out, element *elt) {
         g_string_append_printf(out, "]{%s}\n", elt->contents.link->url);
         if (elt->key == IMAGEBLOCK) {
            if (elt->contents.link->label != NULL) {
-                g_string_append_printf(out, "\\caption{");
-                print_latex_element_list(out, elt->contents.link->label);
-                g_string_append_printf(out, "}\n");
+               if (strlen(elt->contents.link->title) > 0) {
+                   g_string_append_printf(out, "\\caption[%s]{", elt->contents.link->title);
+                   print_latex_element_list(out, elt->contents.link->label);
+                   g_string_append_printf(out, "}\n");
+               } else {
+                   g_string_append_printf(out, "\\caption{");
+                   print_latex_element_list(out, elt->contents.link->label);
+                   g_string_append_printf(out, "}\n");
+               }
             }
             g_string_append_printf(out, "\\label{%s}\n", elt->contents.link->identifier);
             g_string_append_printf(out,"\\end{figure}\n");
@@ -1839,9 +1845,8 @@ void print_odf_element(GString *out, element *elt) {
         }
         g_string_append_printf(out, "><draw:image xlink:href=\"");
         print_odf_string(out, elt->contents.link->url);
-        g_string_append_printf(out,"\" xlink:type=\"simple\" xlink:show=\"embed\" xlink:actuate=\"onLoad\" draw:filter-name=\"&lt;All formats&gt;\"/>\n</draw:frame></text:p>");
+        g_string_append_printf(out,"\" xlink:type=\"simple\" xlink:show=\"embed\" xlink:actuate=\"onLoad\" draw:filter-name=\"&lt;All formats&gt;\"/>\n</draw:frame>");
         if (elt->key == IMAGEBLOCK) {
-            g_string_append_printf(out, "<text:p>");
             if (elt->contents.link->label != NULL) {
                 g_string_append_printf(out, "Figure <text:sequence text:name=\"Figure\" text:formula=\"ooow:Figure+1\" style:num-format=\"1\"> Update Fields to calculate numbers</text:sequence>: ");
                 print_odf_element_list(out, elt->contents.link->label);
