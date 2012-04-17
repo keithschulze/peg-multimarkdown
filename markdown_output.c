@@ -695,7 +695,10 @@ static void print_html_element(GString *out, element *elt, bool obfuscate) {
         }
         break;
     case MATHSPAN:
-        if ( elt->contents.str[strlen(elt->contents.str)-1] == ']') {
+        if (elt->children != NULL) {
+            elt->contents.str[strlen(elt->contents.str)-3] = '\0';
+            g_string_append_printf(out, "<span id=\"%s\" class=\"math\">%s\\]</span>", elt->children->contents.str, elt->contents.str);
+        } else if ( elt->contents.str[strlen(elt->contents.str)-1] == ']') {
             elt->contents.str[strlen(elt->contents.str)-3] = '\0';
             g_string_append_printf(out, "<span class=\"math\">%s\\]</span>", elt->contents.str);
         } else {
@@ -904,7 +907,8 @@ static void print_latex_element(GString *out, element *elt) {
         break;
     case LINK:
         if (strncmp(elt->contents.link->identifier, "fig:", 4) == 0 ||
-            strncmp(elt->contents.link->identifier, "tab:", 4) == 0 ) {
+            strncmp(elt->contents.link->identifier, "tab:", 4) == 0 ||
+            strncmp(elt->contents.link->identifier, "eq:", 3) == 0) {
             if (elt->contents.link->label != NULL && 
                 strcmp(elt->contents.link->label->contents.str, elt->contents.link->identifier) != 0 ) {
                 g_string_append_printf(out, "%s~\\ref{%s}", elt->contents.link->label->contents.str, elt->contents.link->identifier);
@@ -1400,7 +1404,11 @@ static void print_latex_element(GString *out, element *elt) {
             elt->children->contents.str);
         break;
     case MATHSPAN:
-        if (strncmp(&elt->contents.str[2],"\\begin",5) == 0) {
+        if (elt->children != NULL ) {
+            g_string_append_printf(out, "\\begin{equation}\n\\label{%s}\n", elt->children->contents.str);
+            elt->contents.str[strlen(elt->contents.str)-3] = '\0';
+            g_string_append_printf(out, "%s\n\\end{equation}", &elt->contents.str[2]);
+        } else if (strncmp(&elt->contents.str[2],"\\begin",5) == 0) {
             elt->contents.str[strlen(elt->contents.str)-3] = '\0';
             g_string_append_printf(out, "%s",&elt->contents.str[2]);
         } else {

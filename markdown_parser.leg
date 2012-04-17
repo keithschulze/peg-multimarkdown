@@ -1072,7 +1072,16 @@ AutoLabels = ( &{ !extension(EXT_COMPATIBILITY) && !extension(EXT_NO_LABELS)}
                 /* TODO: this causes segfault when trying to use a footnote in the header */
                 /* I would like to fix it at some point */
                 /* free_element_list(b); */
-            } | c:TableCaption {
+            } | c:LabelledMathSpan {
+                GString *label = g_string_new("");
+                char *lab;
+                print_raw_element_list(label, c->children);
+                lab = label_from_string(label->str,0);
+                a = cons(mk_str(lab), a);
+                free(lab);
+                g_string_free(label,true);
+                free_element_list(c);
+            }| c:TableCaption {
                 GString *label = g_string_new("");
                 char *lab;
                 if (c->children->key == TABLELABEL) {
@@ -1233,7 +1242,16 @@ AutoLabel = '[' < (!Newline !'^' !'#' . )( !Newline !']' . )+ > ']' &(!(Sp? ('('
     free(label);
 }
 
-MathSpan = '\\' < (
+MathSpan = LabelledMathSpan | SimpleMathSpan
+
+LabelledMathSpan = a:SimpleMathSpan < Spnl > b:AutoLabel
+{
+    $$ = a;
+    b->next = $$->children;
+    $$->children = b;
+}
+
+SimpleMathSpan = '\\' < (
     ('\\[' (!'\\\\]' .)* '\\\\]') |
     ('\\(' (!'\\\\)' .)* '\\\\)') ) >
 {
