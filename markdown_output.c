@@ -696,8 +696,10 @@ static void print_html_element(GString *out, element *elt, bool obfuscate) {
         break;
     case MATHSPAN:
         if (elt->children != NULL) {
+            label = label_from_string(elt->children->contents.str, obfuscate);
             elt->contents.str[strlen(elt->contents.str)-3] = '\0';
-            g_string_append_printf(out, "<span id=\"%s\" class=\"math\">%s\\]</span>", elt->children->contents.str, elt->contents.str);
+            g_string_append_printf(out, "<span id=\"%s\" class=\"math\">%s\\]</span>", label, elt->contents.str);
+            free(label);
         } else if ( elt->contents.str[strlen(elt->contents.str)-1] == ']') {
             elt->contents.str[strlen(elt->contents.str)-3] = '\0';
             g_string_append_printf(out, "<span class=\"math\">%s\\]</span>", elt->contents.str);
