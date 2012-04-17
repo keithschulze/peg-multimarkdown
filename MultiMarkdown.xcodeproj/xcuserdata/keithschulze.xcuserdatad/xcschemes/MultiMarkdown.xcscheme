@@ -59,7 +59,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-t odf test.md -o test1.fodt"
+            argument = "-t html test.md"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

@@ -8,11 +8,50 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "markdown_output.c"
-         timestampString = "356021915.671981"
+         timestampString = "356339321.935938"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "905"
-         endingLineNumber = "905"
+         startingLineNumber = "908"
+         endingLineNumber = "908"
+         landmarkName = "print_latex_element()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "markdown_output.c"
+         timestampString = "356339321.935938"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1406"
+         endingLineNumber = "1406"
+         landmarkName = "print_latex_element()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "markdown_output.c"
+         timestampString = "356339321.935938"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "956"
+         endingLineNumber = "956"
+         landmarkName = "print_latex_element()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "markdown_output.c"
+         timestampString = "356339321.935938"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1358"
+         endingLineNumber = "1358"
          landmarkName = "print_latex_element()"
          landmarkType = "7">
       </FileBreakpoint>
