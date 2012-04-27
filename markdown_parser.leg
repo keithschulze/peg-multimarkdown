@@ -1051,8 +1051,11 @@ CitationReferenceSingle =  (( "[]" Spnl ref:RawCitationReference )
                     }
                 }
 
-RawCitationReference = "{" < ( !Newline !'}' . )+ > '}'
-                   { $$ = mk_str(yytext); }
+
+RawCitationReference = '{' < ( !Newline !'}' . )+ > '}'
+                { 
+                    $$ = mk_str(yytext);
+                }
 
 
 AutoLabels = ( &{ !extension(EXT_COMPATIBILITY) && !extension(EXT_NO_LABELS)}

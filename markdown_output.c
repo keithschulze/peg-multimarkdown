@@ -1283,9 +1283,11 @@ static void print_latex_element(GString *out, element *elt) {
         break;
     case METAKEY:
         if (strcmp(elt->contents.str, "title") == 0) {
-            g_string_append_printf(out, "\\def\\mytitle{");
-            print_latex_element_list(out, elt->children);
-            g_string_append_printf(out, "}\n");
+            //TODO: I need to fix this so that title is parsed as mmd. ATM it's parsed as latex, which
+            //means that latex markup can be used in metadata title - this breaks titles in HTML and prob ODF
+            g_string_append_printf(out, "\\def\\mytitle{%s}\n", elt->children->contents.str);
+            //print_latex_element_list(out, elt->children);
+            //g_string_append_printf(out, "}\n");
         } else if (strcmp(elt->contents.str, "author") == 0) {
             g_string_append_printf(out, "\\def\\myauthor{");
             print_latex_element_list(out, elt->children);
@@ -1302,6 +1304,10 @@ static void print_latex_element(GString *out, element *elt) {
             base_header_level = atoi(elt->children->contents.str);
         } else if (strcmp(elt->contents.str, "latexheaderlevel") == 0) {
             base_header_level = atoi(elt->children->contents.str);
+        } else if (strcmp(elt->contents.str, "latexbegin") == 0) {
+            g_string_append_printf(out, "\\begin{%s}\n", elt->children->contents.str);
+        } else if (strcmp(elt->contents.str, "latexend") == 0) {
+            g_string_append_printf(out, "\\end{%s}\n", elt->children->contents.str);
         } else if (strcmp(elt->contents.str, "latexinput") == 0) {
             g_string_append_printf(out, "\\input{%s}\n", elt->children->contents.str);
         } else if (strcmp(elt->contents.str, "latexinclude") == 0) {
@@ -2062,7 +2068,8 @@ void print_odf_element(GString *out, element *elt) {
                 } else {
                     char * s = (char*) malloc(i);
                     strncpy(s, &elt->contents.str[1], i-1);
-                    g_string_append_printf(out, " %s et. al. {*%s}",s , &elt->contents.str[1]);
+                    g_string_append_printf(out, " %s et. al. {*%s}", s, &elt->contents.str[1]);
+                    free(s);
                 }
             } else {
                 g_string_append_printf(out, " {%s}", &elt->contents.str[1]);
