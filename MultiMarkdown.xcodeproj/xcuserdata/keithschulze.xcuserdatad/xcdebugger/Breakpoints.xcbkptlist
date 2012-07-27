@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "markdown_output.c"
-         timestampString = "356341255.228968"
+         timestampString = "358224701.632554"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "910"
-         endingLineNumber = "910"
+         startingLineNumber = "914"
+         endingLineNumber = "914"
          landmarkName = "print_latex_element()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -21,37 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "markdown_output.c"
-         timestampString = "356341255.228968"
+         timestampString = "358224701.632554"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1408"
-         endingLineNumber = "1408"
-         landmarkName = "print_latex_element()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "markdown_output.c"
-         timestampString = "356341255.228968"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "958"
-         endingLineNumber = "958"
-         landmarkName = "print_latex_element()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "markdown_output.c"
-         timestampString = "356341255.228968"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1360"
-         endingLineNumber = "1360"
+         startingLineNumber = "962"
+         endingLineNumber = "962"
          landmarkName = "print_latex_element()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -86,24 +60,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "markdown_output.c"
-         timestampString = "356362184.464495"
+         timestampString = "358224701.632554"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "914"
-         endingLineNumber = "914"
-         landmarkName = "print_latex_element()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "markdown_output.c"
-         timestampString = "356363351.358424"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1409"
-         endingLineNumber = "1409"
+         startingLineNumber = "918"
+         endingLineNumber = "918"
          landmarkName = "print_latex_element()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -112,11 +73,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "utility_functions.c"
-         timestampString = "356364347.525508"
+         timestampString = "358244384.503862"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "340"
-         endingLineNumber = "340"
+         startingLineNumber = "355"
+         endingLineNumber = "355"
          landmarkName = "find_label()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -125,11 +86,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "utility_functions.c"
-         timestampString = "356364239.553371"
+         timestampString = "358244384.503862"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "203"
-         endingLineNumber = "203"
+         startingLineNumber = "218"
+         endingLineNumber = "218"
          landmarkName = "find_reference()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -138,11 +99,50 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "markdown_output.c"
-         timestampString = "356575101.751005"
+         timestampString = "358224701.632554"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1192"
-         endingLineNumber = "1192"
+         startingLineNumber = "1196"
+         endingLineNumber = "1196"
+         landmarkName = "print_latex_element()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "markdown_output.c"
+         timestampString = "358224701.632554"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1361"
+         endingLineNumber = "1361"
+         landmarkName = "print_latex_element()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "markdown_output.c"
+         timestampString = "358264487.441267"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1381"
+         endingLineNumber = "1381"
+         landmarkName = "print_latex_element()"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "markdown_output.c"
+         timestampString = "358264487.441267"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1398"
+         endingLineNumber = "1398"
          landmarkName = "print_latex_element()"
          landmarkType = "7">
       </FileBreakpoint>
