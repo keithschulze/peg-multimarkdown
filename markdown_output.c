@@ -858,8 +858,12 @@ static void print_latex_element(GString *out, element *elt) {
     char *label;
     char *height;
     char *width;
-    char *upper;
-    int i;
+    char *upcat;
+	char *upper;
+    char *upnum;
+    
+	int i;
+    int j;
     double floatnum;
     switch (elt->key) {
     case SPACE:
@@ -1198,7 +1202,7 @@ static void print_latex_element(GString *out, element *elt) {
             } else {
                 if ((elt->children != NULL) && (elt->children->key == LOCATOR)) {
                     if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
-                        g_string_append_printf(out, " \\citet[");
+                        g_string_append_printf(out, "\\citet[");
                         elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
                     } else {
                         g_string_append_printf(out, "~\\citep[");
@@ -1208,7 +1212,7 @@ static void print_latex_element(GString *out, element *elt) {
                 } else {
                     if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
                         elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
-                        g_string_append_printf(out, " \\citet{%s}", &elt->contents.str[1]);
+                        g_string_append_printf(out, "\\citet{%s}", &elt->contents.str[1]);
                     } else {
                         g_string_append_printf(out, "~\\citep{%s}", &elt->contents.str[1]);
                     }
@@ -1225,7 +1229,7 @@ static void print_latex_element(GString *out, element *elt) {
             } else {
                 if ((elt->children != NULL) && (elt->children->key == LOCATOR)){
                     if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
-                        g_string_append_printf(out, " \\citet[");
+                        g_string_append_printf(out, "\\citet[");
                         elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
                     } else {
                         g_string_append_printf(out, "~\\citep[");
@@ -1239,7 +1243,7 @@ static void print_latex_element(GString *out, element *elt) {
                 } else {
                     if (strcmp(&elt->contents.str[strlen(elt->contents.str) - 1], "#") == 0) {
                         elt->contents.str[strlen(elt->contents.str) - 1] = '\0';
-                        g_string_append_printf(out, " \\citet{%s}", elt->contents.str);
+                        g_string_append_printf(out, "\\citet{%s}", elt->contents.str);
                     } else {
                         g_string_append_printf(out, "~\\citep{%s}", elt->contents.str);
                     }
@@ -1349,19 +1353,30 @@ static void print_latex_element(GString *out, element *elt) {
         break;
     case TABLE:
         pad(out, 2);
-        g_string_append_printf(out, "\\begin{table}[htbp]\n\\begin{minipage}{\\linewidth}\n\\setlength{\\tymax}{0.5\\linewidth}\n\\centering\n\\small\n");
+        g_string_append_printf(out, "\\begin{center}\n\\begin{singlespace}\n\\small\n\\begin{longtabu}to \\textwidth{");
         print_latex_element_list(out, elt->children);
-        g_string_append_printf(out, "\n\\end{tabulary}\n\\end{minipage}\n\\end{table}\n");
+        g_string_append_printf(out, "\\end{longtabu}\n\\end{singlespace}\n\\end{center}\n");
         padded = 0;
         break;
     case TABLESEPARATOR:
         upper = strdup(elt->contents.str);
-
-        for(i = 0; upper[ i ]; i++)
+        upnum = strdup(elt->children->contents.str);
+        upcat = malloc(strlen(upper)*7);
+            
+        for(i = 0; upper[ i ]; i++) {
             upper[i] = toupper(upper[ i ]);
-    
-        g_string_append_printf(out, "\\begin{tabulary}{\\textwidth}{@{}%s@{}} \\toprule\n", upper);
+            strcat(upcat, "X[");
+            strncat(upcat, &upnum[(i*3)], 3);
+            strcat(upcat, ",");
+            strncat(upcat, &upper[i], 1);
+            strcat(upcat, "]");
+        }
+        
+        table_alignment = elt->contents.str;
+        g_string_append_printf(out, "@{}%s@{}}\n", upcat);
         free(upper);
+        free(upnum);
+        free(upcat);
         break;
     case TABLECAPTION:
         if (elt->children->key == TABLELABEL) {
@@ -1371,21 +1386,27 @@ static void print_latex_element(GString *out, element *elt) {
         }
         g_string_append_printf(out, "\\caption{");
         print_latex_element_list(out, elt->children);
-        g_string_append_printf(out, "}\n\\label{%s}\n",label);
+        g_string_append_printf(out, "}\n\\label{%s}\\\\\n",label);
         free(label);
         break;
     case TABLELABEL:
         break;
     case TABLEHEAD:
-        print_latex_element_list(out, elt->children);
-        g_string_append_printf(out, "\\midrule\n");
+        g_string_append_printf(out, "\\hline\n");
+        GString *gstr;
+        gstr = g_string_new("");
+        print_latex_element_list(gstr, elt->children);
+        g_string_append_printf(out, gstr->str);
+        g_string_append_printf(out, "\\hline\n\\endfirsthead\n\\multicolumn{%d}{c}{\\tablename\\ \\thetable\\ -- \\textit{Continued from previous page}} \\\\\n\\hline\n", strlen(table_alignment));
+        g_string_append_printf(out, gstr->str);
+        g_string_append_printf(out, "\\hline\n\\endhead\n\\hline \\multicolumn{%d}{r}{\\textit{Continued on next page}} \\\\\n\\endfoot\n\\hline\n\\endlastfoot\n", strlen(table_alignment));
+            
+        g_string_free(gstr, false);
         break;
     case TABLEBODY:
         print_latex_element_list(out, elt->children);
         if ( ( elt->next != NULL ) && (elt->next->key == TABLEBODY) ) {
             g_string_append_printf(out, "\n\\midrule\n");
-        } else {
-            g_string_append_printf(out, "\n\\bottomrule\n");
         }
         break;
     case TABLEROW:
@@ -2068,7 +2089,7 @@ void print_odf_element(GString *out, element *elt) {
                 } else {
                     char * s = (char*) malloc(i);
                     strncpy(s, &elt->contents.str[1], i-1);
-                    g_string_append_printf(out, " %s et. al. {*%s}", s, &elt->contents.str[1]);
+                    g_string_append_printf(out, "%s et. al. {*%s}", s, &elt->contents.str[1]);
                     free(s);
                 }
             } else {

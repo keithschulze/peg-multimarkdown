@@ -48,6 +48,21 @@ static void append_list(element *new, element *list) {
     step->next = new;
 }
 
+/* append_list - add element to end of list */
+static void append_one_from_end_list(element *new, element *list) {
+    assert(new != NULL);
+    element *step = list;
+    element *prev;
+    
+    while (step->next != NULL) {
+        prev = step;
+        step = step->next;
+    }
+    
+    new->next = step;
+    prev->next = new;
+}
+
 /* concat_string_list - concatenates string contents of list of STR elements.
  * Frees STR elements as they are added to the concatenation. */
 static GString *concat_string_list(element *list) {
