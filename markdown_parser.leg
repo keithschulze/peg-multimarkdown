@@ -1154,7 +1154,7 @@ Table = a:StartList b:StartList (TableCaption { b = cons($$, b);})?
     ( (TableCaption { b = cons($$, b);} &BlankLine) | &BlankLine)
     # Requires blank line to end table "block"
     {
-        if (b != NULL) { append_list(b,a); };
+        if (b != NULL) { append_one_from_end_list(b,a); };
         $$ = mk_list(TABLE, a);
     }
 
@@ -1192,35 +1192,146 @@ FullCell = Sp a:StartList  ((!CellDivider CellStr | !Newline !Endline !CellDivid
 EmptyCell = Sp CellDivider
 { $$ = mk_element(TABLECELL);}
 
-SeparatorLine = a:StartList 
+SeparatorLine = a:StartList b:StartList
     &(TableLine)
     CellDivider?
-    ( AlignmentCell { a = cons($$, a);})+ Sp Newline
+    ( AlignmentCell { a = cons($$, a); b = cons($$->children, b); })+ Sp Newline
     {
         $$ = mk_str_from_list(a,false);
+        $$->children = mk_str_from_list(b, false);
         $$->key = TABLESEPARATOR;
     }
 
-AlignmentCell = Sp (!CellDivider ( LeftAlignWrap | CenterAlignWrap | RightAlignWrap | LeftAlign | CenterAlign | RightAlign))
+AlignmentCell = Sp (!CellDivider ( LeftAlignWrap | CenterAlignWrap | JustifiedAlignWrap | RightAlignWrap | LeftAlign | CenterAlign | JustifiedAlign | RightAlign))
     Sp ( CellDivider )?
 
-LeftAlignWrap = ':'? '-'+ '+' &(!'-' !':')
-    { $$ = mk_str("L");}
+LeftAlignWrap = < (Digit '.'? Digit?)? > ':'? '-'+ '+' &(!'-' !':')
+    { 
+        $$ = mk_str("L");
+        if (strlen(yytext) == 1) {
+            char *s;
+            s = malloc(strlen(yytext) + 3);
+            sprintf(s, "%s.0", yytext);
+            $$->children = mk_str(s);
+            free(s);
+        } else if (strlen(yytext) != 0) {
+            $$->children = mk_str(yytext);
+        } else {
+            $$->children = mk_str("1.0");
+        }
+    }
 
-LeftAlign = ':'? '-'+ &(!'-' !':')
-    { $$ = mk_str("l");}
+LeftAlign = < (Digit '.'? Digit?)? > ':'? '-'+ &(!'-' !':')
+    { 
+        $$ = mk_str("L");
+        if (strlen(yytext) == 1) {
+            char *s;
+            s = malloc(strlen(yytext) + 3);
+            sprintf(s, "%s.0", yytext);
+            $$->children = mk_str(s);
+            free(s);
+        } else if (strlen(yytext) != 0) {
+            $$->children = mk_str(yytext);
+        } else {
+            $$->children = mk_str("1.0");
+        }
+    }
 
-CenterAlignWrap = ':' '-'* '+' ':' &(!'-' !':')
-    { $$ = mk_str("C");}
+CenterAlignWrap = < (Digit '.'? Digit?)? > ':' '-'* '+' ':' &(!'-' !':')
+    { 
+        $$ = mk_str("C");
+        if (strlen(yytext) == 1) {
+            char *s;
+            s = malloc(strlen(yytext) + 3);
+            sprintf(s, "%s.0", yytext);
+            $$->children = mk_str(s);
+            free(s);
+        } else if (strlen(yytext) != 0) {
+            $$->children = mk_str(yytext);
+        } else {
+            $$->children = mk_str("1.0");
+        }
+    }
 
-CenterAlign = ':' '-'* ':' &(!'-' !':')
-    { $$ = mk_str("c");}
+CenterAlign = < (Digit '.'? Digit?)? > ':' '-'* ':' &(!'-' !':')
+    { 
+        $$ = mk_str("c");
+        if (strlen(yytext) == 1) {
+            char *s;
+            s = malloc(strlen(yytext) + 3);
+            sprintf(s, "%s.0", yytext);
+            $$->children = mk_str(s);
+            free(s);
+        } else if (strlen(yytext) != 0) {
+            $$->children = mk_str(yytext);
+        } else {
+            $$->children = mk_str("1.0");
+        }
+    }
 
-RightAlignWrap = '-'+ ':' '+' &(!'-' !':')
-    { $$ = mk_str("R");}
+JustifiedAlignWrap = < (Digit '.'? Digit?)? > '::' '-'* '+' '::' &(!'-' !':')
+    { 
+        $$ = mk_str("J");
+        if (strlen(yytext) == 1) {
+            char *s;
+            s = malloc(strlen(yytext) + 3);
+            sprintf(s, "%s.0", yytext);
+            $$->children = mk_str(s);
+            free(s);
+        } else if (strlen(yytext) != 0) {
+            $$->children = mk_str(yytext);
+        } else {
+            $$->children = mk_str("1.0");
+        }
+    }
 
-RightAlign = '-'+ ':' &(!'-' !':')
-    { $$ = mk_str("r");}
+JustifiedAlign = < (Digit '.'? Digit?)? > '::' '-'* '::' &(!'-' !':')
+    { 
+        $$ = mk_str("j");
+        if (strlen(yytext) == 1) {
+            char *s;
+            s = malloc(strlen(yytext) + 3);
+            sprintf(s, "%s.0", yytext);
+            $$->children = mk_str(s);
+            free(s);
+        } else if (strlen(yytext) != 0) {
+            $$->children = mk_str(yytext);
+        } else {
+            $$->children = mk_str("1.0");
+        }
+    }
+
+RightAlignWrap = < (Digit '.'? Digit?)? > '-'+ ':' '+' &(!'-' !':')
+    { 
+        $$ = mk_str("R");
+        if (strlen(yytext) == 1) {
+            char *s;
+            s = malloc(strlen(yytext) + 3);
+            sprintf(s, "%s.0", yytext);
+            $$->children = mk_str(s);
+            free(s);
+        } else if (strlen(yytext) != 0) {
+            $$->children = mk_str(yytext);
+        } else {
+            $$->children = mk_str("1.0");
+        }
+    }
+
+RightAlign = < (Digit '.'? Digit?)? > '-'+ ':' &(!'-' !':')
+    { 
+        $$ = mk_str("r");
+        if (strlen(yytext) == 1) {
+            char *s;
+            s = malloc(strlen(yytext) + 3);
+            sprintf(s, "%s.0", yytext);
+            $$->children = mk_str(s);
+            free(s);
+        } else if (strlen(yytext) != 0) {
+            $$->children = mk_str(yytext);
+        } else {
+            $$->children = mk_str("1.0");
+        }
+    }
 
 CellDivider = '|'
 
