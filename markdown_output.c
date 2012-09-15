@@ -294,9 +294,15 @@ static void print_html_element(GString *out, element *elt, bool obfuscate) {
         g_string_append_printf(out, " />");
         if (elt->key == IMAGEBLOCK) {
             if (elt->contents.link->label != NULL) {
-                g_string_append_printf(out, "\n<figcaption>");
-                print_html_element_list(out, elt->contents.link->label, obfuscate);
-                g_string_append_printf(out, "</figcaption>");
+                if (elt->contents.link->identifier != NULL) {
+                    g_string_append_printf(out, "\n<figcaption id=\"%s\">", elt->contents.link->identifier);
+                    print_html_element_list(out, elt->contents.link->label, obfuscate);
+                    g_string_append_printf(out, "</figcaption>");
+                } else {
+                    g_string_append_printf(out, "\n<figcaption>");
+                    print_html_element_list(out, elt->contents.link->label, obfuscate);
+                    g_string_append_printf(out, "</figcaption>");
+                }
             }
             g_string_append_printf(out, "</figure>\n");
         }
