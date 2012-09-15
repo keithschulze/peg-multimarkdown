@@ -177,19 +177,6 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "markdown_output.c"
-         timestampString = "369387180.470186"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "2100"
-         endingLineNumber = "2100"
-         landmarkName = "print_odf_element()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "markdown_output.c"
          timestampString = "369387212.090169"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"

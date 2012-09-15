@@ -2107,7 +2107,7 @@ void print_odf_element(GString *out, element *elt) {
                 if (i == strlen(elt->contents.str)) {
                     g_string_append_printf(out, "{*%s}", &elt->contents.str[1]);
                 } else {
-                    char * s = (char*) malloc(i-1);
+                    char * s = (char*) malloc(i);
                     strncat(s, &elt->contents.str[1], i-1);
                     g_string_append_printf(out, "%s et. al. {*%s}", s, &elt->contents.str[1]);
                     free(s);
