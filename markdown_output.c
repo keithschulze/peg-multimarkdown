@@ -1838,7 +1838,16 @@ void print_odf_element(GString *out, element *elt) {
         }
         break;
     case LINK:
-        if (elt->contents.link->url[0] == '#') {
+        if (strncmp(elt->contents.link->identifier, "fig:", 4) == 0 ||
+            strncmp(elt->contents.link->identifier, "tab:", 4) == 0) {
+            if (elt->contents.link->label != NULL &&
+                strcmp(elt->contents.link->label->contents.str, elt->contents.link->identifier) != 0 ) {
+                g_string_append_printf(out, "<text:span>%s </text:span><text:span><text:sequence-ref text:reference-format=\"value\" text:ref-name=\"%s\">Update Fields to calculate numbers</text:sequence-ref></text:span>", elt->contents.link->label->contents.str, elt->contents.link->identifier);
+            } else {
+                g_string_append_printf(out, "<text:span><text:sequence-ref text:reference-format=\"value\" text:ref-name=\"%s\">Update Fields to calculate numbers</text:sequence-ref></text:span>", elt->contents.link->identifier);
+            }
+                
+        } else if (elt->contents.link->url[0] == '#') {
             /* This is a cross-reference */
             label = label_from_string(elt->contents.link->url,0);
             if (elt->contents.link->label != NULL) {
@@ -1885,8 +1894,13 @@ void print_odf_element(GString *out, element *elt) {
         g_string_append_printf(out,"\" xlink:type=\"simple\" xlink:show=\"embed\" xlink:actuate=\"onLoad\" draw:filter-name=\"&lt;All formats&gt;\"/>\n</draw:frame>");
         if (elt->key == IMAGEBLOCK) {
             if (elt->contents.link->label != NULL) {
-                g_string_append_printf(out, "Figure <text:sequence text:name=\"Figure\" text:formula=\"ooow:Figure+1\" style:num-format=\"1\"> Update Fields to calculate numbers</text:sequence>: ");
-                print_odf_element_list(out, elt->contents.link->label);
+                if (elt->contents.link->identifier != NULL) {
+                    g_string_append_printf(out, "Figure <text:sequence text:ref-name=\"%s\" text:name=\"Figure\" text:formula=\"ooow:Figure+1\" style:num-format=\"1\"> Update Fields to calculate numbers</text:sequence>: ", elt->contents.link->identifier);
+                    print_odf_element_list(out, elt->contents.link->label);
+                } else {
+                    g_string_append_printf(out, "Figure <text:sequence text:name=\"Figure\" text:formula=\"ooow:Figure+1\" style:num-format=\"1\"> Update Fields to calculate numbers</text:sequence>: ");
+                    print_odf_element_list(out, elt->contents.link->label);
+                }
             }
             g_string_append_printf(out, "</text:p></draw:text-box></draw:frame>\n</text:p>\n");
         } else {
@@ -2197,21 +2211,28 @@ void print_odf_element(GString *out, element *elt) {
         print_odf_element_list(out, elt->children);
         break;
     case TABLE:
-        g_string_append_printf(out,"\n<table:table>\n");
-        print_odf_element_list(out, elt->children);
-        g_string_append_printf(out, "</table:table>");
-        /* print caption if present */
-        if (elt->children->key == TABLECAPTION) {
-            if (elt->children->children->key == TABLELABEL) {
-                label = label_from_element_list(elt->children->children->children,0);
+        if (elt->children->next->key == TABLECAPTION) {
+            if (elt->children->next->children->key == TABLELABEL) {
+                label = label_from_element_list(elt->children->next->children->children,0);
             } else {
-                label = label_from_element_list(elt->children->children,0);
+                label = label_from_element_list(elt->children->next->children,0);
             }
-            g_string_append_printf(out,"<text:p><text:bookmark text:name=\"%s\"/>Table <text:sequence text:name=\"Table\" text:formula=\"ooow:Table+1\" style:num-format=\"1\"> Update Fields to calculate numbers</text:sequence>:", label);
-            print_odf_element_list(out,elt->children->children);
-            g_string_append_printf(out, "<text:bookmark-end text:name=\"%s\"/></text:p>\n",label);
+            
+            if (label != NULL) {
+                g_string_append_printf(out,"<text:p>Table <text:sequence text:ref-name=\"%s\" text:name=\"Table\" text:formula=\"ooow:Table+1\" style:num-format=\"1\"> Update Fields to calculate numbers</text:sequence>:", label);
+            } else {
+                g_string_append_printf(out,"<text:p>Table <text:sequence text:name=\"Table\" text:formula=\"ooow:Table+1\" style:num-format=\"1\"> Update Fields to calculate numbers</text:sequence>:");
+            }
+            
+            print_odf_element_list(out,elt->children->next->children);
+            g_string_append_printf(out, "</text:p>\n");
             free(label);
         }
+        g_string_append_printf(out,"\n<table:table>\n");
+        print_odf_element_list(out, elt->children);
+        g_string_append_printf(out, "</table:table>\n");
+        /* print caption if present */
+        
         break;
    case TABLESEPARATOR:
        table_alignment = elt->contents.str;
