@@ -43,7 +43,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/keithschulze/Documents/MMD/Test"
+      customWorkingDirectory = "/Users/keithschulze/Desktop"
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
@@ -59,11 +59,11 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-o test.html"
-            isEnabled = "YES">
+            argument = "-o introduction.fodt"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-t html test.md"
+            argument = "-t odf introduction.md"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
