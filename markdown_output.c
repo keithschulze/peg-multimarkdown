@@ -925,7 +925,7 @@ static void print_latex_element(GString *out, element *elt) {
                 strcmp(elt->contents.link->label->contents.str, elt->contents.link->identifier) != 0 ) {
                 g_string_append_printf(out, "%s~\\ref{%s}", elt->contents.link->label->contents.str, elt->contents.link->identifier);
             } else {
-                g_string_append_printf(out, "~\\ref{%s}", elt->contents.link->identifier);
+                g_string_append_printf(out, "\\ref{%s}", elt->contents.link->identifier);
             }
         } else if (elt->contents.link->url[0] == '#') {
             /* This is a link to anchor within document */
