@@ -3,9 +3,9 @@
   markdown_output.c - functions for printing Elements parsed by 
                       markdown_peg.
   (c) 2008 John MacFarlane (jgm at berkeley dot edu).
-  
-  portions Copyright (c) 2010-2011 Fletcher T. Penney
-  portions Copyright (C) 2012 Keith E. Schulze
+
+  portions Copyright (c) 2010-2013 Fletcher T. Penney
+  portions Copyright (c) 2012-2013 Keith E. Schulze
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License or the MIT
@@ -25,8 +25,9 @@
 #include <assert.h>
 #include "glib.h"
 #include "markdown_peg.h"
-#include "utility_functions.c"
-#include "odf.c"
+#include "odf.h"
+
+#include "utility_functions.h"
 
 static int extensions;
 static int base_header_level = 1;
@@ -38,7 +39,6 @@ static int language = ENGLISH;
 static bool html_footer = FALSE;
 static bool force_latex_snippet = FALSE;
 static int odf_type = 0;
-static bool in_list = FALSE;
 static bool no_latex_footnote = FALSE;
 static bool am_printing_html_footnote = FALSE;
 static int footnote_counter_to_print = 0;
@@ -113,7 +113,7 @@ static void pad(GString *out, int num) {
 }
 
 /* determine whether a certain element is contained within a given list */
-bool list_contains_key(element *list, int key) {
+static bool list_contains_key(element *list, int key) {
     element *step = NULL;
 
     step = list;
@@ -155,7 +155,7 @@ static void print_html_string(GString *out, char *str, bool obfuscate) {
             g_string_append_printf(out, "&quot;");
             break;
         default:
-            if (obfuscate) {
+	  if (obfuscate && ((int) *str < 128) && ((int) *str >= 0)){
                 if (rand() % 2 == 0)
                     g_string_append_printf(out, "&#%d;", (int) *str);
                 else
@@ -932,9 +932,9 @@ static void print_latex_element(GString *out, element *elt) {
             label = label_from_string(elt->contents.link->url,0);
             if (elt->contents.link->label != NULL) {
                     print_latex_element_list(out, elt->contents.link->label);
-                g_string_append_printf(out, " (\\autoref\{%s})", label);             
+                g_string_append_printf(out, " (\\autoref{%s})", label);             
             } else {
-                g_string_append_printf(out, "\\autoref\{%s}", label);
+                g_string_append_printf(out, "\\autoref{%s}", label);
             }
             free(label);
         } else if ( (elt->contents.link->label != NULL) &&
@@ -1782,7 +1782,7 @@ static void print_odf_string(GString *out, char *str) {
 }
 
 /* print_odf_element_list - print an element list as ODF */
-void print_odf_element_list(GString *out, element *list) {
+static void print_odf_element_list(GString *out, element *list) {
     while (list != NULL) {
         print_odf_element(out, list);
         list = list->next;
@@ -1790,12 +1790,12 @@ void print_odf_element_list(GString *out, element *list) {
 }
 
 /* print_odf_element - print an element as ODF */
-void print_odf_element(GString *out, element *elt) {
+static void print_odf_element(GString *out, element *elt) {
     int lev;
     char *label;
     char *height;
     char *width;
-    element *locator = NULL;
+    /* element *locator = NULL; */
     int old_type = 0;
     switch (elt->key) {
     case SPACE:
@@ -2095,7 +2095,7 @@ void print_odf_element(GString *out, element *elt) {
     case NOCITATION:
     case CITATION:
         /* Get locator, if present */
-        locator = locator_for_citation(elt);
+        /* locator = locator_for_citation(elt); */
 
         if (strncmp(elt->contents.str,"[",1) == 0) {
             /* reference specified externally, so just display it */
@@ -2435,8 +2435,6 @@ void print_memoir_element_list(GString *out, element *list) {
 
 /* print_memoir_element - print an element as LaTeX for memoir class */
 static void print_memoir_element(GString *out, element *elt) {
-    int lev;
-    char *label;
     switch (elt->key) {
     case VERBATIM:
         pad(out, 1);

@@ -1,9 +1,10 @@
+
 /**********************************************************************
 
   markdown_lib.c - markdown in C using a PEG grammar.
   (c) 2008 John MacFarlane (jgm at berkeley dot edu).
 
-  portions Copyright (c) 2010-2011 Fletcher T. Penney
+  portions Copyright (c) 2010-2013 Fletcher T. Penney
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License or the MIT
@@ -22,6 +23,7 @@
 #include "markdown_peg.h"
 
 #define TABSTOP 4
+#define VERSION "3.7"
 
 /* preformat_text - allocate and copy text buffer while
  * performing tab expansion. */
@@ -255,3 +257,9 @@ gboolean has_metadata(char *text, int extensions) {
     return hasMeta;
 }
 
+/* version - return the MultiMarkdown library version */
+char * mmd_version() {
+    char* result = (char*)malloc(8);
+    sprintf(result, "%s",VERSION);
+    return result;
+}
