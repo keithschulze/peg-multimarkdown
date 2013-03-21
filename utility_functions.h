@@ -82,6 +82,7 @@ char *label_from_string(char *str, bool obfuscate);
 void localize_typography(GString *out, int character, int language, int output);
 void print_raw_element_list(GString *out, element *list);   
 void append_list(element *new, element *list);
+void append_one_from_end_list(element *new, element *list);
 bool find_label(link *result, element *label);
 bool check_timeout();
 void trim_trailing_whitespace(char *str);

@@ -47,7 +47,7 @@ void append_list(element *new, element *list) {
 }
 
 /* append_list - add element to end of list */
-static void append_one_from_end_list(element *new, element *list) {
+void append_one_from_end_list(element *new, element *list) {
     assert(new != NULL);
     element *step = list;
     element *prev;
