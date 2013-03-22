@@ -1293,11 +1293,11 @@ static void print_latex_element(GString *out, element *elt) {
         break;
     case METAKEY:
         if (strcmp(elt->contents.str, "title") == 0) {
-            //TODO: I need to fix this so that title is parsed as mmd. ATM it's parsed as latex, which
-            //means that latex markup can be used in metadata title - this breaks titles in HTML and prob ODF
+            /*TODO: I need to fix this so that title is parsed as mmd. ATM it's parsed as latex, which
+            means that latex markup can be used in metadata title - this breaks titles in HTML and prob ODF */
             g_string_append_printf(out, "\\def\\mytitle{%s}\n", elt->children->contents.str);
-            //print_latex_element_list(out, elt->children);
-            //g_string_append_printf(out, "}\n");
+            /*print_latex_element_list(out, elt->children);
+            g_string_append_printf(out, "}\n");*/
         } else if (strcmp(elt->contents.str, "author") == 0) {
             g_string_append_printf(out, "\\def\\myauthor{");
             print_latex_element_list(out, elt->children);
@@ -1367,7 +1367,7 @@ static void print_latex_element(GString *out, element *elt) {
     case TABLESEPARATOR:
         upper = strdup(elt->contents.str);
         upnum = strdup(elt->children->contents.str);
-        upcat = malloc(strlen(upper)*7);
+        upcat = malloc(strlen(upper)+strlen(upnum)+strlen(upnum)*4+1);
             
         for(i = 0; upper[ i ]; i++) {
             upper[i] = toupper(upper[ i ]);
@@ -1379,6 +1379,7 @@ static void print_latex_element(GString *out, element *elt) {
         }
         
         table_alignment = elt->contents.str;
+        strcat(upcat, "\0");
         g_string_append_printf(out, "@{}%s@{}}\n", upcat);
         free(upper);
         free(upnum);
